@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using SGAR_Seguridad.Properties.DTOs;
-using SGAR_Seguridad.Properties.Services.Users;
+﻿using SGAR_Seguridad.Properties.DTOs;
 
 namespace SGAR_Seguridad.Properties.Services.Users
 {

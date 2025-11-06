@@ -72,8 +72,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
                         1 => "Ciudadano",
                         2 => "Operador",
                         3 => "Asociado",
-                        4 => "Organizacion",
-                        5 => "Supervisor",
+                        4 => "Supervisor",
                         //_ => "Organizacion"
                     };
 

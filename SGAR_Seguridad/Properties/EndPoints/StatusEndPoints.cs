@@ -8,7 +8,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
         {
             var group = router.MapGroup("/status").WithTags("Status");
 
-            group.MapGet("/status", async () =>
+            group.MapGet("/", async () =>
             {
                 return Results.Ok(new { status = "API SGAR_Seguridad esta activa" });
 

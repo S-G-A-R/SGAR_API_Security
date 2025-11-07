@@ -15,6 +15,26 @@ namespace SGAR_Seguridad.Properties.EndPoints
         {
             var group = routes.MapGroup("/api/user").WithTags("users");
 
+            //EndPoint para obtener lista los registros de usuario
+            group.MapGet("/list", async (int? page, int? pageSize, IUserServices userService) =>
+            {
+                var currentPage = page ?? 1;
+                var size = pageSize ?? 10;
+                
+                if (currentPage < 1) currentPage = 1;
+                if (size < 1) size = 10;
+                if (size > 50) size = 50; // Límite máximo de registros por página
+                
+                var users = await userService.GetUsers(currentPage, size);
+                return Results.Ok(users);
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Obtener lista de usuarios paginada",
+                Description = "Retorna una lista paginada de usuarios. Por defecto 10 registros por página.",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+
             //EndPoint para obtener usuario por id
             group.MapGet("/{id}", async (int id, IUserServices userService) =>
             {
@@ -50,6 +70,50 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Description = "Crea un nuevo usuario en el sistema",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
+            //EndPoint para actualizar un registro de personal
+            group.MapPut("/{id}", async (int id, UserRequest userUpdate, IUserServices userService) =>
+            {
+                var result = await userService.PutUser(id, userUpdate);
+                if (result == -1)
+                    return Results.NotFound(new
+                    {
+                        message = "No se encontró el usuario con el ID proporcionado."
+                    });
+                else
+                    return Results.Ok(new
+                    {  // Mensaje de éxito explícito
+                        message = "¡Usuario actualizado exitosamente!",
+                        Id = id,
+                    });
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Actualizar usuario",
+                Description = "Actualiza la información de un usuario existente",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+            // EndPoint para eliminar un registro de usuario
+            group.MapDelete("/{id}", async (int id, IUserServices userService) =>
+            {
+                var result = await userService.DeleteUser(id);
+                if (result == -1)
+                    return Results.NotFound(new
+                    {
+                        message = "No se encontró el usuario con el ID proporcionado."
+                    });
+                else
+                    return Results.Ok(new
+                    {
+                        // Mensaje de éxito explícito
+                        message = "¡Usuario eliminado exitosamente!",
+                        id = id
+                    });
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Eliminar usuario",
+                Description = "Elimina un usuario existente mediante su ID",
+            });
 
             //EndPoint para generar token 
             group.MapPost("/login", async (CredencialesRequest user, IUserServices userService, IConfiguration config) =>
@@ -72,7 +136,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
                         1 => "Ciudadano",
                         2 => "Operador",
                         3 => "Asociado",
-                        4 => "Supervisor",
+                        4 => "Administrador",
                         //_ => "Organizacion"
                     };
 

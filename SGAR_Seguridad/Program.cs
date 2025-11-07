@@ -1,9 +1,13 @@
-using SGAR_Seguridad.Properties.EndPoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SGAR_Seguridad.Properties.EndPoints;
 using SGAR_Seguridad.Properties.Models;
+using SGAR_Seguridad.Properties.Services.Ciudadanos;
+using SGAR_Seguridad.Properties.Services.Operadores;
+using SGAR_Seguridad.Properties.Services.Administradores;
+using SGAR_Seguridad.Properties.Services.Organizations;
 using SGAR_Seguridad.Properties.Services.Users;
 using System.Reflection;
 using System.Text;
@@ -50,7 +54,10 @@ builder.Services.AddDbContext<SgarSecurityDbContext>(
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<IUserServices, UserServices>();
-//builder.Services.AddScoped<IPersonalServices, PersonalServices>();
+builder.Services.AddScoped<IOrganizacionServices, OrganizacionServices>();
+builder.Services.AddScoped<ICiudadanoServices, CiudadanoServices>();
+builder.Services.AddScoped<IOperadorServices, OperadorServices>();
+builder.Services.AddScoped<IAdministradorServices, AdministradorServices>();
 
 var JwtSetting = builder.Configuration.GetSection("JwtSetting");
 var secretKey = JwtSetting.GetValue<string>("SecretKey");

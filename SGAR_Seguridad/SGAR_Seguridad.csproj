@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Properties\Models\" />
+    <Folder Include="Properties\Services\Solicitudes\" />
   </ItemGroup>
 
 </Project>

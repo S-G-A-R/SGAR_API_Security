@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SGAR_Seguridad.Properties.Models;
+﻿namespace SGAR_Seguridad.Properties.Models;
 
 public partial class Operadore
 {

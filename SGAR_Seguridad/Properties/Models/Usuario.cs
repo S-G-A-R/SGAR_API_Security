@@ -23,6 +23,8 @@ public partial class Usuario
 
     public int IdRol { get; set; }
 
+    public virtual Administradore? Administradore { get; set; }
+
     public virtual Ciudadano? Ciudadano { get; set; }
 
     public virtual Role IdRolNavigation { get; set; } = null!;
@@ -30,6 +32,4 @@ public partial class Usuario
     public virtual Operadore? Operadore { get; set; }
 
     public virtual ICollection<Puntuacion> Puntuacions { get; set; } = new List<Puntuacion>();
-
-    public virtual Supervisore? Supervisore { get; set; }
 }

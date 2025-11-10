@@ -3,6 +3,7 @@ using SGAR_Seguridad.Properties.DTOs;
 using SGAR_Seguridad.Properties.Services.Ciudadanos;
 using SGAR_Seguridad.Properties.Services.Operadores;
 using SGAR_Seguridad.Properties.Services.Organizations;
+using SGAR_Seguridad.Properties.Services.Users;
 
 namespace SGAR_Seguridad.Properties.EndPoints
 {
@@ -88,6 +89,30 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Summary = "Eliminar operador",
                 Description = "Elimina una operador existente mediante su ID",
             });
+
+            //EndPoint para actualizar un registro de operador
+            group.MapPut("/{id}", async (int id, OperadorRequest operadorUpdate, IOperadorServices operadorService) =>
+            {
+                var result = await operadorService.PutOperador(id, operadorUpdate);
+                if (result == -1)
+                    return Results.NotFound(new
+                    {
+                        message = "No se encontró el operador con el ID proporcionado."
+                    });
+                else
+                    return Results.Ok(new
+                    {  // Mensaje de éxito explícito
+                        message = "¡Operador actualizado exitosamente!",
+                        Id = id,
+                    });
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Actualizar operador",
+                Description = "Actualiza la información de un operador existente",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+
         }
     }
 }

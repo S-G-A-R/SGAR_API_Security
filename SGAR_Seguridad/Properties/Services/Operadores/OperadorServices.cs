@@ -52,31 +52,28 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             _db.Operadores.Remove(operador);
             return await _db.SaveChangesAsync();
         }
+        public async Task<int> PutOperador(int operadorId, OperadorRequest operador)
+        {
+            var entity = await _db.Operadores.FindAsync(operadorId);
+            if (entity == null)
+            {
+                return -1;
+            }
 
-        //public async Task<int> PutUser(int userId, OperadorRequest operador)
-        //{
-        //    var entity = await _db.Operadores.FindAsync(userId);
-        //    if (entity == null)
-        //    {
-        //        return -1;
-        //    }
+            var exists = await _db.Operadores.AnyAsync(p =>
+            p.CodigoOperador == operador.CodigoOperador &&
+            p.IdVehiculo == operador.IdVehiculo);
 
-        //    var exists = await _db.Operadores.AnyAsync(p =>
-        //    p.CodigoOperador == operador.CodigoOperador &&
-        //    p.Apellido == user.Apellido &&
-        //    p.Telefono == user.Telefono &&
-        //    p.Email == user.Email);
+            if (exists)
+            {
+                throw new InvalidOperationException("Ya existe un registro de operador con los mismos datos.");
+            }
 
-        //    if (exists)
-        //    {
-        //        throw new InvalidOperationException("Ya existe un registro de usuario con los mismos datos.");
-        //    }
+            // Actualiza la entidad en la base de datos
+            _db.Operadores.Update(entity);
 
-        //    // Actualiza la entidad en la base de datos
-        //    _db.Usuarios.Update(entity);
-
-        //    return await _db.SaveChangesAsync();
-        //}
+            return await _db.SaveChangesAsync();
+        }
 
         public async Task<PaginatedResponseOperador<OperadorResponse>> GetOperadores(int pageNumber = 1, int pageSize = 10)
         {

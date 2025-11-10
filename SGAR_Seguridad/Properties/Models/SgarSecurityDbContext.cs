@@ -158,7 +158,6 @@ public partial class SgarSecurityDbContext : DbContext
             entity.ToTable("SolicitudesOperador");
 
             entity.Property(e => e.Estado)
-                .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.FechaSolicitud)
                 .HasDefaultValueSql("(getdate())")

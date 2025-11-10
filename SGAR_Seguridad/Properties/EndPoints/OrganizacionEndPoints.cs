@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SGAR_Seguridad.Properties.DTOs;
+using SGAR_Seguridad.Properties.Services.Operadores;
 using SGAR_Seguridad.Properties.Services.Organizations;
 using SGAR_Seguridad.Properties.Services.Users;
 using System.IdentityModel.Tokens.Jwt;
@@ -91,6 +92,28 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Summary = "Eliminar organizacion",
                 Description = "Elimina una organizacion existente mediante su ID",
             });
+
+            //EndPoint para actualizar un registro de organizacion
+            group.MapPut("/{id}", async (int id, OrganizationRequest orgUpdate, IOrganizacionServices orgService) =>
+            {
+                var result = await orgService.PutOrganization(id, orgUpdate);
+                if (result == -1)
+                    return Results.NotFound(new
+                    {
+                        message = "No se encontró el organizacion con el ID proporcionado."
+                    });
+                else
+                    return Results.Ok(new
+                    {  // Mensaje de éxito explícito
+                        message = "¡Organizacion actualizado exitosamente!",
+                        Id = id,
+                    });
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Actualizar organizacion",
+                Description = "Actualiza la información de un organizacion existente",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
             //EndPoint para generar token 
             group.MapPost("/login", async (CredencialesOrganizationRequest orgUser, IOrganizacionServices orgService, IConfiguration config) =>

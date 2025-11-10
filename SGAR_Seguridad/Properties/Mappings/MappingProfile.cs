@@ -14,7 +14,25 @@ namespace SGAR_Seguridad.Properties.Mappings
             CreateMap<Usuario, UserResponse>();
             CreateMap<CredencialesRequest, Usuario>();
 
-        }
 
+            CreateMap<Organizacion, OrganizationRequest>();
+            CreateMap<OrganizationRequest, Organizacion>();
+
+            CreateMap<Organizacion, OrganizationResponse>();
+            CreateMap<CredencialesOrganizationRequest, Organizacion>();
+
+            CreateMap<Ciudadano, CiudadanoResponse>();
+            CreateMap<CiudadanoRequest, Ciudadano>();
+
+            CreateMap<Operadore, OperadorResponse>();
+            CreateMap<OperadorRequest, Operadore>();
+
+            CreateMap<Administradore, AdministradorResponse>();
+            CreateMap<AdministradorRequest, Administradore>();
+
+            CreateMap<SolicitudesOperador, SolicitudResponse>();
+            CreateMap<SolicitudRequest, SolicitudesOperador>();
+
+        }
     }
 }

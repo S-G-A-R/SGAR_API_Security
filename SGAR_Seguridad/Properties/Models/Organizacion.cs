@@ -17,7 +17,11 @@ public partial class Organizacion
 
     public string Password { get; set; } = null!;
 
+    public int IdRol { get; set; }
+
+    public virtual Role IdRolNavigation { get; set; } = null!;
+
     public virtual ICollection<Operadore> Operadores { get; set; } = new List<Operadore>();
 
-    public virtual ICollection<Supervisore> Supervisores { get; set; } = new List<Supervisore>();
+    public virtual ICollection<SolicitudesOperador> SolicitudesOperadors { get; set; } = new List<SolicitudesOperador>();
 }

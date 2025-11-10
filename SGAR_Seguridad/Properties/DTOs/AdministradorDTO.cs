@@ -1,6 +1,6 @@
 ﻿namespace SGAR_Seguridad.Properties.DTOs
 {
-    public class PaginatedResponseCiudadano<T>
+    public class PaginatedResponseAdmin<T>
     {
         public List<T> Items { get; set; }
         public int PageNumber { get; set; }
@@ -11,18 +11,20 @@
         public bool HasPreviousPage { get; set; }
     }
 
-    public class CiudadanoResponse
+    public class AdministradorResponse
     {
         public int Id { get; set; }
-        public int IdZona { get; set; }
+        public string Codigo { get; set; } = null!;
+        public string EmailLaboral { get; set; } = null!;
+        public string TelefonoLaboral { get; set; } = null!;
         public int IdUser { get; set; }
     }
 
-    public class CiudadanoRequest
+    public class AdministradorRequest
     {
-        public int Id { get; set; }
-        public int IdZona { get; set; }
+        public string Codigo { get; set; } = null!;
+        public string EmailLaboral { get; set; } = null!;
+        public string TelefonoLaboral { get; set; } = null!;
         public int IdUser { get; set; }
-
     }
 }

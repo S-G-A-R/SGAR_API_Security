@@ -12,4 +12,6 @@ public partial class Ciudadano
     public int IdUser { get; set; }
 
     public virtual Usuario IdUserNavigation { get; set; } = null!;
+
+    public virtual ICollection<SolicitudesOperador> SolicitudesOperadors { get; set; } = new List<SolicitudesOperador>();
 }

@@ -8,6 +8,11 @@ namespace SGAR_Seguridad.Properties.EndPoints
         {
             StatusEndPoints.add(app);
             UserEndPoints.add(app);
+            OrganizacionEndPoints.add(app);
+            CiudadanoEndPoints.add(app);
+            AdministradorEndPoints.add(app);
+            OperadorEndPoints.add(app);
+            SolicitudEndPoints.add(app);
         }
     }
 }

@@ -30,6 +30,9 @@ namespace SGAR_Seguridad.Properties.Mappings
             CreateMap<Administradore, AdministradorResponse>();
             CreateMap<AdministradorRequest, Administradore>();
 
+            CreateMap<SolicitudesOperador, SolicitudResponse>();
+            CreateMap<SolicitudRequest, SolicitudesOperador>();
+
         }
     }
 }

@@ -66,31 +66,136 @@ namespace SGAR_Seguridad.Properties.EndPoints
 
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
-                Summary = "Crear nuevo usuario",
-                Description = "Crea un nuevo usuario en el sistema",
+                Summary = "Crear nuevo usuario (JSON)",
+                Description = "Crea un nuevo usuario en el sistema. Puede incluir una foto en formato base64 en el campo FotoBase64",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
-            //EndPoint para actualizar un registro de personal
-            group.MapPut("/{id}", async (int id, UserRequest userUpdate, IUserServices userService) =>
+            //EndPoint para crear nuevo registro de usuarios con archivo de imagen
+            group.MapPost("/create", async (
+                [Microsoft.AspNetCore.Mvc.FromForm] string nombre,
+                [Microsoft.AspNetCore.Mvc.FromForm] string apellido,
+                [Microsoft.AspNetCore.Mvc.FromForm] string email,
+                [Microsoft.AspNetCore.Mvc.FromForm] string dui,
+                [Microsoft.AspNetCore.Mvc.FromForm] string password,
+                [Microsoft.AspNetCore.Mvc.FromForm] int idRol,
+                [Microsoft.AspNetCore.Mvc.FromForm] string? telefono,
+                IFormFile? file,
+                IUserServices userService) =>
             {
-                var result = await userService.PutUser(id, userUpdate);
-                if (result == -1)
-                    return Results.NotFound(new
+                try
+                {
+                    var userRequest = new CreateUserWithFileRequest
                     {
-                        message = "No se encontró el usuario con el ID proporcionado."
+                        Nombre = nombre,
+                        Apellido = apellido,
+                        Email = email,
+                        Dui = dui,
+                        Password = password,
+                        IdRol = idRol,
+                        Telefono = telefono
+                    };
+
+                    var id = await userService.PostUserWithFile(userRequest, file);
+
+                    return Results.Created($"/api/user/{id}", new
+                    {
+                        message = "¡Usuario creado exitosamente con foto!",
+                        Id = id
                     });
-                else
-                    return Results.Ok(new
-                    {  // Mensaje de éxito explícito
-                        message = "¡Usuario actualizado exitosamente!",
-                        Id = id,
-                    });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.BadRequest(new { message = ex.Message });
+                }
 
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
-                Summary = "Actualizar usuario",
-                Description = "Actualiza la información de un usuario existente",
+                Summary = "Crear nuevo usuario con foto (Form-Data)",
+                Description = "Crea un nuevo usuario en el sistema cargando directamente una imagen. La foto es opcional. Formatos permitidos: JPG, JPEG, PNG, GIF, BMP. Tamaño máximo: 5MB",
+            }).DisableAntiforgery();//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+            //EndPoint para actualizar un registro de usuario (JSON)
+            group.MapPut("/{id}", async (int id, UserRequest userUpdate, IUserServices userService) =>
+            {
+                try
+                {
+                    var result = await userService.PutUser(id, userUpdate);
+                    if (result == -1)
+                        return Results.NotFound(new
+                        {
+                            message = "No se encontró el usuario con el ID proporcionado."
+                        });
+                    else
+                        return Results.Ok(new
+                        {
+                            message = "¡Usuario actualizado exitosamente!",
+                            Id = id,
+                        });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.BadRequest(new { message = ex.Message });
+                }
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Actualizar usuario (JSON)",
+                Description = "Actualiza la información de un usuario existente. Puede incluir una foto en formato base64 en el campo FotoBase64",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+            //EndPoint para actualizar usuario con archivo de imagen
+            group.MapPut("/update/{id}", async (
+                int id,
+                [Microsoft.AspNetCore.Mvc.FromForm] string nombre,
+                [Microsoft.AspNetCore.Mvc.FromForm] string apellido,
+                [Microsoft.AspNetCore.Mvc.FromForm] string email,
+                [Microsoft.AspNetCore.Mvc.FromForm] string dui,
+                [Microsoft.AspNetCore.Mvc.FromForm] int idRol,
+                [Microsoft.AspNetCore.Mvc.FromForm] string? telefono,
+                [Microsoft.AspNetCore.Mvc.FromForm] string? password,
+                IFormFile? file,
+                IUserServices userService) =>
+            {
+                try
+                {
+                    var userRequest = new UpdateUserWithFileRequest
+                    {
+                        Nombre = nombre,
+                        Apellido = apellido,
+                        Email = email,
+                        Dui = dui,
+                        IdRol = idRol,
+                        Telefono = telefono,
+                        Password = password
+                    };
+
+                    var result = await userService.PutUserWithFile(id, userRequest, file);
+                    if (result == -1)
+                        return Results.NotFound(new
+                        {
+                            message = "No se encontró el usuario con el ID proporcionado."
+                        });
+                    else
+                        return Results.Ok(new
+                        {
+                            message = "¡Usuario actualizado exitosamente!",
+                            Id = id
+                        });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.BadRequest(new { message = ex.Message });
+                }
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Actualizar usuario con foto (Form-Data)",
+                Description = "Actualiza un usuario existente con opción de actualizar o mantener la foto. " +
+                             "- Si envías un archivo: Se actualiza la foto\n" +
+                             "- Si NO envías archivo: Se mantiene la foto actual\n" +
+                             "- El campo 'password' es opcional, déjalo vacío para no cambiarlo\n" +
+                             "Formatos permitidos: JPG, JPEG, PNG, GIF, BMP. Tamaño máximo: 5MB",
+            }).DisableAntiforgery();//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
             // EndPoint para eliminar un registro de usuario
             group.MapDelete("/{id}", async (int id, IUserServices userService) =>
@@ -114,6 +219,35 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Summary = "Eliminar usuario",
                 Description = "Elimina un usuario existente mediante su ID",
             });
+
+            //EndPoint para actualizar el rol de un usuario
+            group.MapPut("/{id}/role", async (int id, UpdateRolRequest userUpdateRol, IUserServices userService) =>
+            {
+                try
+                {
+                    var result = await userService.PutRolUser(id, userUpdateRol);
+                    if (result == -1)
+                        return Results.NotFound(new
+                        {
+                            message = "No se encontró el usuario con el ID proporcionado."
+                        });
+                    else
+                        return Results.Ok(new
+                        {
+                            message = "¡Rol de usuario actualizado exitosamente!",
+                            Id = id,
+                        });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.BadRequest(new { message = ex.Message });
+                }
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Actualizar rol de usuario",
+                Description = "Actualiza únicamente el rol de un usuario existente.",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
             //EndPoint para generar token 
             group.MapPost("/login", async (CredencialesRequest user, IUserServices userService, IConfiguration config) =>
@@ -166,7 +300,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
                 Summary = "Login personal",
-                Description = "Generar toke para autenticacion",
+                Description = "Generar token para autenticacion",
             });
 
         }

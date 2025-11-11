@@ -108,6 +108,9 @@ public partial class SgarSecurityDbContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.IdMunicipio)
+               .HasMaxLength(250)
+               .IsUnicode(false);
             entity.Property(e => e.NombreOrganizacion)
                 .HasMaxLength(250)
                 .IsUnicode(false);

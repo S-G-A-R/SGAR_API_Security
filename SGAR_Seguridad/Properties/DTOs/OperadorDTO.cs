@@ -29,4 +29,20 @@
         public byte[]? LicenciaDoc { get; set; }
         public int IdOrganizacion { get; set; }
     }
+
+    public class CreateOperadorWithFileRequest
+    {
+        public int IdUser { get; set; }
+        public string CodigoOperador { get; set; } = null!;
+        public int IdVehiculo { get; set; }
+        public int IdOrganizacion { get; set; }
+    }
+
+    public class UpdateOperadorWithFileRequest
+    {
+        public int IdUser { get; set; }
+        public string CodigoOperador { get; set; } = null!;
+        public int IdVehiculo { get; set; }
+        public int IdOrganizacion { get; set; }
+    }
 }

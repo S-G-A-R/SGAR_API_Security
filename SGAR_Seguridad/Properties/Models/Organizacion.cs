@@ -7,7 +7,7 @@ public partial class Organizacion
 {
     public int Id { get; set; }
 
-    public int IdMunicipio { get; set; }
+    public string IdMunicipio { get; set; } = null!;
 
     public string NombreOrganizacion { get; set; } = null!;
 

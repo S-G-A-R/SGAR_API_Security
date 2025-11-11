@@ -8,7 +8,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
     {
         public static void add(this IEndpointRouteBuilder router)
         {
-            var group = router.MapGroup("api/administrador").WithTags("Administraodores");
+            var group = router.MapGroup("api/administrador").WithTags("Administradores");
 
             //EndPoint para obtener lista los registros de administradores paginados
             group.MapGet("/list", async (int? page, int? pageSize, IAdministradorServices adminService) =>

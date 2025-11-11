@@ -2,6 +2,33 @@ CREATE DATABASE SGAR_SecurityDB;
 
 USE SGAR_SecurityDB;
 
+--Usuario
+INSERT INTO Usuarios (Nombre, Apellido, Telefono, Email, DUI, Foto, Password, IdRol)
+VALUES (
+    'Marvin',                        
+    'Antonio',                 
+    '78901234',                    
+    'Marvin@ejemplo.com',      
+    '01234567-8',                  
+    NULL,                          
+    '12345',   
+    4                              
+);
+
+--Roles 
+--ID 1 
+INSERT INTO Roles (NombreRol) VALUES ('Ciudadano');  
+--ID 2
+INSERT INTO Roles (NombreRol) VALUES ('Operador');   
+--ID 3 
+INSERT INTO Roles (NombreRol) VALUES ('Asociado');  
+--ID 4
+INSERT INTO Roles (NombreRol) VALUES ('Administrador');
+--ID 5
+INSERT INTO Roles (NombreRol) VALUES ('Organizacion');
+
+
+
 -- 1.1. ROLES
 CREATE TABLE Roles (
     Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,

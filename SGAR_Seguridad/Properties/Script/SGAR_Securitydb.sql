@@ -11,7 +11,7 @@ VALUES (
     'Marvin@ejemplo.com',      
     '01234567-8',                  
     NULL,                          
-    '12345',   
+    '$2a$11$en6g7vk7CW9vonQlNlpRkuCIvU8RDH3//cXFKHC/uCzMRYrA5OyDe',   
     4                              
 );
 

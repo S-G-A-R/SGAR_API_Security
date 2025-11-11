@@ -1,6 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
-
-namespace SGAR_Seguridad.Properties.EndPoints
+﻿namespace SGAR_Seguridad.Properties.EndPoints
 {
     public static class Startup
     {
@@ -13,6 +11,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             AdministradorEndPoints.add(app);
             OperadorEndPoints.add(app);
             SolicitudEndPoints.add(app);
+            PuntuacionEndPoints.add(app);
         }
     }
 }

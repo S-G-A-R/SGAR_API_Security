@@ -68,12 +68,6 @@ CREATE TABLE Puntuacion (
     NombreAnonimo VARCHAR(255) NULL,
     IdUser INT NULL,
     CONSTRAINT FK_Puntuacion_Usuario FOREIGN KEY (IdUser) REFERENCES Usuarios(Id),
-    
-    -- Restricción CHECK
-    CONSTRAINT CK_Puntuacion_Origen CHECK (
-        (CASE WHEN IdUser IS NULL THEN 1 ELSE 0 END) + 
-        (CASE WHEN NombreAnonimo IS NULL THEN 1 ELSE 0 END) = 1
-    )
 );
 
 

@@ -1,32 +1,7 @@
 CREATE DATABASE SGAR_SecurityDB;
 
+GO
 USE SGAR_SecurityDB;
-
---Usuario
-INSERT INTO Usuarios (Nombre, Apellido, Telefono, Email, DUI, Foto, Password, IdRol)
-VALUES (
-    'Marvin',                        
-    'Antonio',                 
-    '78901234',                    
-    'Marvin@ejemplo.com',      
-    '01234567-8',                  
-    NULL,                          
-    '$2a$11$en6g7vk7CW9vonQlNlpRkuCIvU8RDH3//cXFKHC/uCzMRYrA5OyDe',   
-    4                              
-);
-
---Roles 
---ID 1 
-INSERT INTO Roles (NombreRol) VALUES ('Ciudadano');  
---ID 2
-INSERT INTO Roles (NombreRol) VALUES ('Operador');   
---ID 3 
-INSERT INTO Roles (NombreRol) VALUES ('Asociado');  
---ID 4
-INSERT INTO Roles (NombreRol) VALUES ('Administrador');
---ID 5
-INSERT INTO Roles (NombreRol) VALUES ('Organizacion');
-
 
 
 -- 1.1. ROLES
@@ -111,3 +86,28 @@ CREATE TABLE SolicitudesOperador (
     CONSTRAINT FK_Solicitud_Ciudadano FOREIGN KEY (IdCiudadano) REFERENCES Ciudadanos(Id),
     CONSTRAINT FK_Solicitud_Organizacion FOREIGN KEY (IdOrganizacion) REFERENCES Organizacion(Id)
 );
+
+--Usuario
+INSERT INTO Usuarios (Nombre, Apellido, Telefono, Email, DUI, Foto, Password, IdRol)
+VALUES (
+    'Marvin',                        
+    'Antonio',                 
+    '78901234',                    
+    'Marvin@ejemplo.com',      
+    '01234567-8',                  
+    NULL,                          
+    '$2a$11$en6g7vk7CW9vonQlNlpRkuCIvU8RDH3//cXFKHC/uCzMRYrA5OyDe',   
+    4                              
+);
+
+--Roles 
+--ID 1 
+INSERT INTO Roles (NombreRol) VALUES ('Ciudadano');  
+--ID 2
+INSERT INTO Roles (NombreRol) VALUES ('Operador');   
+--ID 3 
+INSERT INTO Roles (NombreRol) VALUES ('Asociado');  
+--ID 4
+INSERT INTO Roles (NombreRol) VALUES ('Administrador');
+--ID 5
+INSERT INTO Roles (NombreRol) VALUES ('Organizacion');

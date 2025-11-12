@@ -29,8 +29,7 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             // Verifica si ya existe un registro con los mismos datos
             var exists = await _db.Operadores.AnyAsync(p =>
                 p.IdUser == operador.IdUser &&
-                p.CodigoOperador == operador.CodigoOperador &&
-                p.IdVehiculo == operador.IdVehiculo);
+                p.CodigoOperador == operador.CodigoOperador);
 
             if (exists)
             {
@@ -50,8 +49,7 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             // Verifica si ya existe un registro con los mismos datos
             var exists = await _db.Operadores.AnyAsync(p =>
                 p.IdUser == operador.IdUser &&
-                p.CodigoOperador == operador.CodigoOperador &&
-                p.IdVehiculo == operador.IdVehiculo);
+                p.CodigoOperador == operador.CodigoOperador);
 
             if (exists)
             {
@@ -62,7 +60,6 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             {
                 IdUser = operador.IdUser,
                 CodigoOperador = operador.CodigoOperador,
-                IdVehiculo = operador.IdVehiculo,
                 IdOrganizacion = operador.IdOrganizacion
             };
 
@@ -114,8 +111,7 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             // Verificar si existe otro operador (diferente al actual) con los mismos datos
             var exists = await _db.Operadores.AnyAsync(p =>
                 p.Id != operadorId && // Excluir el operador actual
-                p.CodigoOperador == operador.CodigoOperador &&
-                p.IdVehiculo == operador.IdVehiculo);
+                p.CodigoOperador == operador.CodigoOperador);
 
             if (exists)
             {
@@ -125,7 +121,6 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             // Actualizar las propiedades de la entidad con los valores recibidos
             entity.IdUser = operador.IdUser;
             entity.CodigoOperador = operador.CodigoOperador;
-            entity.IdVehiculo = operador.IdVehiculo;
             entity.IdOrganizacion = operador.IdOrganizacion;
 
             // Actualizar el documento de licencia si se proporciona
@@ -151,8 +146,7 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             // Verificar si existe otro operador (diferente al actual) con los mismos datos
             var exists = await _db.Operadores.AnyAsync(p =>
                 p.Id != operadorId &&
-                p.CodigoOperador == operador.CodigoOperador &&
-                p.IdVehiculo == operador.IdVehiculo);
+                p.CodigoOperador == operador.CodigoOperador);
 
             if (exists)
             {
@@ -162,7 +156,6 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             // Actualizar las propiedades básicas
             entity.IdUser = operador.IdUser;
             entity.CodigoOperador = operador.CodigoOperador;
-            entity.IdVehiculo = operador.IdVehiculo;
             entity.IdOrganizacion = operador.IdOrganizacion;
 
             // Manejar el archivo - solo se actualiza si se proporciona uno nuevo

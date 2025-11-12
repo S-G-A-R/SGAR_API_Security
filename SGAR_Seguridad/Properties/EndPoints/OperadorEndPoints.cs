@@ -85,7 +85,6 @@ namespace SGAR_Seguridad.Properties.EndPoints
                     {
                         IdUser = idUser,
                         CodigoOperador = codigoOperador,
-                        IdVehiculo = idVehiculo,
                         IdOrganizacion = idOrganizacion
                     };
 
@@ -177,7 +176,6 @@ namespace SGAR_Seguridad.Properties.EndPoints
                     {
                         IdUser = idUser,
                         CodigoOperador = codigoOperador,
-                        IdVehiculo = idVehiculo,
                         IdOrganizacion = idOrganizacion
                     };
 

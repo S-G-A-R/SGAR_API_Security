@@ -27,19 +27,6 @@
 
         public byte[]? Foto { get; set; }
 
-        // Propiedad adicional para devolver la foto en formato base64
-        public string? FotoBase64
-        {
-            get
-            {
-                if (Foto != null && Foto.Length > 0)
-                {
-                    return Convert.ToBase64String(Foto);
-                }
-                return null;
-            }
-        }
-
         public int IdRol { get; set; }
     }
 

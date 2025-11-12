@@ -69,9 +69,8 @@ CREATE TABLE Operadores (
     Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
     IdUser INT UNIQUE NOT NULL,
     CodigoOperador VARCHAR(20) UNIQUE NOT NULL,
-    IdVehiculo INT NOT NULL, -- Asumo FK a Vehiculos
     LicenciaDoc VARBINARY(MAX) NULL,
-    IdOrganizacion INT NOT NULL, -- Relación uno a muchos con Organizacion
+    IdOrganizacion INT NOT NULL, 
     CONSTRAINT FK_Operador_Usuario FOREIGN KEY (IdUser) REFERENCES Usuarios(Id),
     CONSTRAINT FK_Operador_Organizacion FOREIGN KEY (IdOrganizacion) REFERENCES Organizacion(Id)
 );
@@ -87,6 +86,19 @@ CREATE TABLE SolicitudesOperador (
     CONSTRAINT FK_Solicitud_Organizacion FOREIGN KEY (IdOrganizacion) REFERENCES Organizacion(Id)
 );
 
+--Roles 
+--ID 1 
+INSERT INTO Roles (NombreRol) VALUES ('Ciudadano');  
+--ID 2
+INSERT INTO Roles (NombreRol) VALUES ('Operador');   
+--ID 3 
+INSERT INTO Roles (NombreRol) VALUES ('Asociado');  
+--ID 4
+INSERT INTO Roles (NombreRol) VALUES ('Administrador');
+--ID 5
+INSERT INTO Roles (NombreRol) VALUES ('Organizacion');
+
+
 --Usuario
 INSERT INTO Usuarios (Nombre, Apellido, Telefono, Email, DUI, Foto, Password, IdRol)
 VALUES (
@@ -100,14 +112,3 @@ VALUES (
     4                              
 );
 
---Roles 
---ID 1 
-INSERT INTO Roles (NombreRol) VALUES ('Ciudadano');  
---ID 2
-INSERT INTO Roles (NombreRol) VALUES ('Operador');   
---ID 3 
-INSERT INTO Roles (NombreRol) VALUES ('Asociado');  
---ID 4
-INSERT INTO Roles (NombreRol) VALUES ('Administrador');
---ID 5
-INSERT INTO Roles (NombreRol) VALUES ('Organizacion');

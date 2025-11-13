@@ -13,7 +13,7 @@ CREATE TABLE Roles (
 -- 1.2. ORGANIZACION
 CREATE TABLE Organizacion (
     Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-    IdMunicipio INT NOT NULL, 
+    IdMunicipio VARCHAR(250) NOT NULL, 
     NombreOrganizacion VARCHAR(250) NOT NULL,
     Telefono CHAR(9) NOT NULL,
     Email VARCHAR(255) UNIQUE,

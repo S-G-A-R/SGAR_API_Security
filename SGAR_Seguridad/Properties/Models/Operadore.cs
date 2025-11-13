@@ -8,8 +8,6 @@ public partial class Operadore
 
     public string CodigoOperador { get; set; } = null!;
 
-    public int IdVehiculo { get; set; }
-
     public byte[]? LicenciaDoc { get; set; }
 
     public int IdOrganizacion { get; set; }

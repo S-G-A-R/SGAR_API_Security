@@ -1,9 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using SGAR_Seguridad.Properties.DTOs;
-using SGAR_Seguridad.Properties.Services.Ciudadanos;
 using SGAR_Seguridad.Properties.Services.Operadores;
-using SGAR_Seguridad.Properties.Services.Organizations;
-using SGAR_Seguridad.Properties.Services.Users;
 
 namespace SGAR_Seguridad.Properties.EndPoints
 {
@@ -46,26 +43,70 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Description = "Obtiene un operador específico mediante su ID",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
-            //EndPoint para crear nuevo registro de organizaciones
+            //EndPoint para crear nuevo registro de operador (JSON)
             group.MapPost("/", async (OperadorRequest operador, IOperadorServices operadorService) =>
             {
-                if (operador == null)
-                    return Results.BadRequest();
-
-                var id = await operadorService.PostOperador(operador);
-
-                return Results.Created($"/api/operador/{id}", new
+                try
                 {
-                    // Mensaje de éxito explícito
-                    message = "¡Operador creado exitosamente!",
-                    Id = id
-                });
+                    if (operador == null)
+                        return Results.BadRequest();
+
+                    var id = await operadorService.PostOperador(operador);
+
+                    return Results.Created($"/api/operador/{id}", new
+                    {
+                        message = "¡Operador creado exitosamente!",
+                        Id = id
+                    });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.BadRequest(new { message = ex.Message });
+                }
 
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
-                Summary = "Crear nuevo Operador",
+                Summary = "Crear nuevo Operador (JSON)",
                 Description = "Crea un nuevo operador en el sistema",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+            //EndPoint para crear nuevo registro de operador con archivo de documento
+            group.MapPost("/create", async (
+                [Microsoft.AspNetCore.Mvc.FromForm] int idUser,
+                [Microsoft.AspNetCore.Mvc.FromForm] string codigoOperador,
+                [Microsoft.AspNetCore.Mvc.FromForm] int idVehiculo,
+                [Microsoft.AspNetCore.Mvc.FromForm] int idOrganizacion,
+                IFormFile? file,
+                IOperadorServices operadorService) =>
+            {
+                try
+                {
+                    var operadorRequest = new CreateOperadorWithFileRequest
+                    {
+                        IdUser = idUser,
+                        CodigoOperador = codigoOperador,
+                        IdOrganizacion = idOrganizacion
+                    };
+
+                    var id = await operadorService.PostOperadorWithFile(operadorRequest, file);
+
+                    return Results.Created($"/api/operador/{id}", new
+                    {
+                        message = "¡Operador creado exitosamente con documento!",
+                        Id = id
+                    });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.BadRequest(new { message = ex.Message });
+                }
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Crear nuevo operador con documento (Form-Data)",
+                Description = "Crea un nuevo operador en el sistema cargando directamente un documento de licencia. " +
+                             "El documento es opcional. Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 10MB",
+            }).DisableAntiforgery();//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
             // EndPoint para eliminar un registro de Operador por id
             group.MapDelete("/{id}", async (int id, IOperadorServices oprgService) =>
@@ -90,27 +131,80 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Description = "Elimina una operador existente mediante su ID",
             });
 
-            //EndPoint para actualizar un registro de operador
+            //EndPoint para actualizar un registro de operador (JSON)
             group.MapPut("/{id}", async (int id, OperadorRequest operadorUpdate, IOperadorServices operadorService) =>
             {
-                var result = await operadorService.PutOperador(id, operadorUpdate);
-                if (result == -1)
-                    return Results.NotFound(new
-                    {
-                        message = "No se encontró el operador con el ID proporcionado."
-                    });
-                else
-                    return Results.Ok(new
-                    {  // Mensaje de éxito explícito
-                        message = "¡Operador actualizado exitosamente!",
-                        Id = id,
-                    });
+                try
+                {
+                    var result = await operadorService.PutOperador(id, operadorUpdate);
+                    if (result == -1)
+                        return Results.NotFound(new
+                        {
+                            message = "No se encontró el operador con el ID proporcionado."
+                        });
+                    else
+                        return Results.Ok(new
+                        {
+                            message = "¡Operador actualizado exitosamente!",
+                            Id = id,
+                        });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.BadRequest(new { message = ex.Message });
+                }
 
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
-                Summary = "Actualizar operador",
+                Summary = "Actualizar operador (JSON)",
                 Description = "Actualiza la información de un operador existente",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+            //EndPoint para actualizar operador con archivo de documento
+            group.MapPut("/update/{id}", async (
+                int id,
+                [Microsoft.AspNetCore.Mvc.FromForm] int idUser,
+                [Microsoft.AspNetCore.Mvc.FromForm] string codigoOperador,
+                [Microsoft.AspNetCore.Mvc.FromForm] int idVehiculo,
+                [Microsoft.AspNetCore.Mvc.FromForm] int idOrganizacion,
+                IFormFile? file,
+                IOperadorServices operadorService) =>
+            {
+                try
+                {
+                    var operadorRequest = new UpdateOperadorWithFileRequest
+                    {
+                        IdUser = idUser,
+                        CodigoOperador = codigoOperador,
+                        IdOrganizacion = idOrganizacion
+                    };
+
+                    var result = await operadorService.PutOperadorWithFile(id, operadorRequest, file);
+                    if (result == -1)
+                        return Results.NotFound(new
+                        {
+                            message = "No se encontró el operador con el ID proporcionado."
+                        });
+                    else
+                        return Results.Ok(new
+                        {
+                            message = "¡Operador actualizado exitosamente!",
+                            Id = id
+                        });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.BadRequest(new { message = ex.Message });
+                }
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Actualizar operador con documento (Form-Data)",
+                Description = "Actualiza un operador existente con opción de actualizar o mantener el documento de licencia. " +
+                             "- Si envías un archivo: Se actualiza el documento\n" +
+                             "- Si NO envías archivo: Se mantiene el documento actual\n" +
+                             "Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 10MB",
+            }).DisableAntiforgery();//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
 
         }

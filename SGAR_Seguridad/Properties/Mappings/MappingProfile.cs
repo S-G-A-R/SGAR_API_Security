@@ -33,6 +33,9 @@ namespace SGAR_Seguridad.Properties.Mappings
             CreateMap<SolicitudesOperador, SolicitudResponse>();
             CreateMap<SolicitudRequest, SolicitudesOperador>();
 
+            CreateMap<Puntuacion, PuntuacionResponse>();
+            CreateMap<PuntuacionRequest, Puntuacion>();
+
         }
     }
 }

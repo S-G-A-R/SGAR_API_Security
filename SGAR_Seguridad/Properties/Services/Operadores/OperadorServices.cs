@@ -29,8 +29,7 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             // Verifica si ya existe un registro con los mismos datos
             var exists = await _db.Operadores.AnyAsync(p =>
                 p.IdUser == operador.IdUser &&
-                p.CodigoOperador == operador.CodigoOperador &&
-                p.IdVehiculo == operador.IdVehiculo);
+                p.CodigoOperador == operador.CodigoOperador);
 
             if (exists)
             {
@@ -44,6 +43,54 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             await _db.SaveChangesAsync();
             return operadorRequest.Id;
         }
+
+        public async Task<int> PostOperadorWithFile(CreateOperadorWithFileRequest operador, IFormFile? file)
+        {
+            // Verifica si ya existe un registro con los mismos datos
+            var exists = await _db.Operadores.AnyAsync(p =>
+                p.IdUser == operador.IdUser &&
+                p.CodigoOperador == operador.CodigoOperador);
+
+            if (exists)
+            {
+                throw new InvalidOperationException("Ya existe un registro de operador con los mismos datos.");
+            }
+
+            var operadorEntity = new Operadore
+            {
+                IdUser = operador.IdUser,
+                CodigoOperador = operador.CodigoOperador,
+                IdOrganizacion = operador.IdOrganizacion
+            };
+
+            // Manejar el archivo si se proporciona
+            if (file != null && file.Length > 0)
+            {
+                var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    throw new InvalidOperationException("Solo se permiten documentos con formato PDF, DOC o DOCX.");
+                }
+
+                if (file.Length > 10 * 1024 * 1024)
+                {
+                    throw new InvalidOperationException("El tamaño del documento no puede exceder 10MB.");
+                }
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    operadorEntity.LicenciaDoc = memoryStream.ToArray();
+                }
+            }
+
+            await _db.Operadores.AddAsync(operadorEntity);
+            await _db.SaveChangesAsync();
+            return operadorEntity.Id;
+        }
+
         public async Task<int> DeleteOperador(int operadorId)
         {
             var operador = await _db.Operadores.FindAsync(operadorId);
@@ -52,6 +99,7 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             _db.Operadores.Remove(operador);
             return await _db.SaveChangesAsync();
         }
+
         public async Task<int> PutOperador(int operadorId, OperadorRequest operador)
         {
             var entity = await _db.Operadores.FindAsync(operadorId);
@@ -60,18 +108,81 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
                 return -1;
             }
 
+            // Verificar si existe otro operador (diferente al actual) con los mismos datos
             var exists = await _db.Operadores.AnyAsync(p =>
-            p.CodigoOperador == operador.CodigoOperador &&
-            p.IdVehiculo == operador.IdVehiculo);
+                p.Id != operadorId && // Excluir el operador actual
+                p.CodigoOperador == operador.CodigoOperador);
 
             if (exists)
             {
                 throw new InvalidOperationException("Ya existe un registro de operador con los mismos datos.");
             }
 
+            // Actualizar las propiedades de la entidad con los valores recibidos
+            entity.IdUser = operador.IdUser;
+            entity.CodigoOperador = operador.CodigoOperador;
+            entity.IdOrganizacion = operador.IdOrganizacion;
+
+            // Actualizar el documento de licencia si se proporciona
+            if (operador.LicenciaDoc != null)
+            {
+                entity.LicenciaDoc = operador.LicenciaDoc;
+            }
+
             // Actualiza la entidad en la base de datos
             _db.Operadores.Update(entity);
 
+            return await _db.SaveChangesAsync();
+        }
+
+        public async Task<int> PutOperadorWithFile(int operadorId, UpdateOperadorWithFileRequest operador, IFormFile? file)
+        {
+            var entity = await _db.Operadores.FindAsync(operadorId);
+            if (entity == null)
+            {
+                return -1;
+            }
+
+            // Verificar si existe otro operador (diferente al actual) con los mismos datos
+            var exists = await _db.Operadores.AnyAsync(p =>
+                p.Id != operadorId &&
+                p.CodigoOperador == operador.CodigoOperador);
+
+            if (exists)
+            {
+                throw new InvalidOperationException("Ya existe un registro de operador con los mismos datos.");
+            }
+
+            // Actualizar las propiedades básicas
+            entity.IdUser = operador.IdUser;
+            entity.CodigoOperador = operador.CodigoOperador;
+            entity.IdOrganizacion = operador.IdOrganizacion;
+
+            // Manejar el archivo - solo se actualiza si se proporciona uno nuevo
+            if (file != null && file.Length > 0)
+            {
+                var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    throw new InvalidOperationException("Solo se permiten documentos con formato PDF, DOC o DOCX.");
+                }
+
+                if (file.Length > 10 * 1024 * 1024)
+                {
+                    throw new InvalidOperationException("El tamaño del documento no puede exceder 10MB.");
+                }
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    entity.LicenciaDoc = memoryStream.ToArray();
+                }
+            }
+            // Si no se envía archivo, se mantiene el documento actual
+
+            _db.Operadores.Update(entity);
             return await _db.SaveChangesAsync();
         }
 

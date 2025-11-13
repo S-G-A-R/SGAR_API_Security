@@ -13,7 +13,7 @@
     public class OrganizationResponse
     {
         public int Id { get; set; }
-        public int IdMunicipio { get; set; }
+        public string IdMunicipio { get; set; } = null!;
         public string NombreOrganizacion { get; set; } = null!;
         public string Telefono { get; set; } = null!;
         public string Email { get; set; } = null!;
@@ -21,7 +21,7 @@
     }
     public class OrganizationRequest
     {
-        public int IdMunicipio { get; set; }
+        public string IdMunicipio { get; set; } = null!;
         public string NombreOrganizacion { get; set; } = null!;
         public string Telefono { get; set; } = null!;
         public string Email { get; set; } = null!;

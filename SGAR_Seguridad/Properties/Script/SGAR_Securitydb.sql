@@ -18,6 +18,7 @@ CREATE TABLE Organizacion (
     Telefono CHAR(9) NOT NULL,
     Email VARCHAR(255) UNIQUE,
     Password VARCHAR(255) NOT NULL,
+    notificacion VARCHAR(250) NULL,
     IdRol INT NOT NULL, 
     CONSTRAINT FK_Organizacion_Rol FOREIGN KEY (IdRol) REFERENCES Roles(Id)
 );

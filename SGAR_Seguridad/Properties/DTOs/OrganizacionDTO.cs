@@ -17,6 +17,7 @@
         public string NombreOrganizacion { get; set; } = null!;
         public string Telefono { get; set; } = null!;
         public string Email { get; set; } = null!;
+        public string notificacion { get; set; } = null!;
         public int IdRol { get; set; }
     }
     public class OrganizationRequest
@@ -26,6 +27,7 @@
         public string Telefono { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
+        public string notificacion { get; set; } = null!;
         public int IdRol { get; set; }
     }
 }

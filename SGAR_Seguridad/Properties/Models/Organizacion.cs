@@ -16,6 +16,7 @@ public partial class Organizacion
     public string? Email { get; set; }
 
     public string Password { get; set; } = null!;
+    public string notificacion { get; set; } = null!;
 
     public int IdRol { get; set; }
 

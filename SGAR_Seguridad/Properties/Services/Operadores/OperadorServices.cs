@@ -188,7 +188,8 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
 
         public async Task<PaginatedResponseOperador<OperadorResponse>> GetOperadores(int pageNumber = 1, int pageSize = 10)
         {
-            var query = _db.Operadores.AsNoTracking();
+            var query = _db.Operadores.AsNoTracking()
+                .OrderByDescending(o => o.Id);
 
             var totalCount = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -212,5 +213,49 @@ namespace SGAR_Seguridad.Properties.Services.Operadores
             };
         }
 
+        public async Task<PaginatedResponseOperador<OperadorResponse>> SearchOperadores(string? codigoOperador, int? idUser, int? idOrganizacion, int pageNumber = 1, int pageSize = 10)
+        {
+            var query = _db.Operadores.AsNoTracking().AsQueryable();
+
+            // Aplicar filtros dinámicos solo si los parámetros no son nulos o vacíos
+            if (!string.IsNullOrWhiteSpace(codigoOperador))
+            {
+                query = query.Where(o => o.CodigoOperador.Contains(codigoOperador));
+            }
+
+            if (idUser.HasValue)
+            {
+                query = query.Where(o => o.IdUser == idUser.Value);
+            }
+
+            if (idOrganizacion.HasValue)
+            {
+                query = query.Where(o => o.IdOrganizacion == idOrganizacion.Value);
+            }
+
+            // Ordenar de forma descendente por ID
+            query = query.OrderByDescending(o => o.Id);
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var operadores = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var operadorResponses = _mapper.Map<List<OperadorResponse>>(operadores);
+
+            return new PaginatedResponseOperador<OperadorResponse>
+            {
+                Items = operadorResponses,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                TotalCount = totalCount,
+                HasNextPage = pageNumber < totalPages,
+                HasPreviousPage = pageNumber > 1
+            };
+        }
     }
 }

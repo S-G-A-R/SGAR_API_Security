@@ -29,6 +29,31 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Description = "Retorna una lista paginada de operadores. Por defecto 10 registros por página.",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
+            //EndPoint para buscar operadores por criterios
+            group.MapGet("/search", async (
+                string? codigoOperador,
+                int? idUser,
+                int? idOrganizacion,
+                int? page,
+                int? pageSize,
+                IOperadorServices oprService) =>
+            {
+                var currentPage = page ?? 1;
+                var size = pageSize ?? 10;
+
+                if (currentPage < 1) currentPage = 1;
+                if (size < 1) size = 10;
+                if (size > 50) size = 50;
+
+                var operadores = await oprService.SearchOperadores(codigoOperador, idUser, idOrganizacion, currentPage, size);
+                return Results.Ok(operadores);
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Buscar operadores por criterios",
+                Description = "Busca operadores filtrando por código, usuario y/o organización. Todos los parámetros son opcionales. Retorna resultados paginados.",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
             //EndPoint para obtener organizacion por id
             group.MapGet("/{id}", async (int id, IOperadorServices operadorService) =>
             {

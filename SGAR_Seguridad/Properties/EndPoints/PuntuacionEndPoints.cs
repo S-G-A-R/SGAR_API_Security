@@ -29,6 +29,26 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Description = "Retorna una lista paginada de puntuaciones. Por defecto 10 registros por página.",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
+            //EndPoint para buscar puntuaciones por puntos
+            group.MapGet("/search", async (int? puntos, int? page, int? pageSize, IPuntuacionServices puntuacionService) =>
+            {
+                var currentPage = page ?? 1;
+                var size = pageSize ?? 10;
+
+                if (currentPage < 1) currentPage = 1;
+                if (size < 1) size = 10;
+                if (size > 50) size = 50; // Límite máximo de registros por página
+
+                var puntuaciones = await puntuacionService.SearchPuntuaciones(puntos, currentPage, size);
+                return Results.Ok(puntuaciones);
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Buscar puntuaciones por puntos",
+                Description = "Busca puntuaciones filtrando por cantidad de puntos. El parámetro 'puntos' es opcional. Si no se proporciona, retorna todas las puntuaciones paginadas.",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+
             //EndPoint para obtener una puntuación por id
             group.MapGet("/{id}", async (int id, IPuntuacionServices puntuacionService) =>
             {
@@ -43,13 +63,13 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Description = "Obtiene una puntuación específica mediante su ID",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
-            //EndPoint para crear nueva puntuación
-            group.MapPost("/", async (PuntuacionRequest puntuacion, IPuntuacionServices puntuacionService) =>
+            //EndPoint para crear nueva puntuación de un usuario
+            group.MapPost("/Autenticado", async (PuntuacionRequestConIdUser puntuacion, IPuntuacionServices puntuacionService) =>
             {
                 if (puntuacion == null)
                     return Results.BadRequest();
 
-                var id = await puntuacionService.PostPuntuacion(puntuacion);
+                var id = await puntuacionService.PostPuntuacionConIdUser(puntuacion);
 
                 return Results.Created($"/api/puntuacion/{id}", new
                 {
@@ -59,17 +79,37 @@ namespace SGAR_Seguridad.Properties.EndPoints
 
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
-                Summary = "Crear nueva puntuación",
-                Description = "Crea una nueva puntuación en el sistema",
+                Summary = "Crear nueva puntuación de un usuario",
+                Description = "Crea una nueva puntuación de un usuario en el sistema",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
-            //EndPoint para actualizar una puntuación
-            group.MapPut("/{id}", async (int id, PuntuacionRequest puntuacion, IPuntuacionServices puntuacionService) =>
+            //EndPoint para crear nueva puntuación de un usuario sin IdUser
+            group.MapPost("/Anonimo", async (PuntuacionRequestSinIdUser puntuacion, IPuntuacionServices puntuacionService) =>
             {
                 if (puntuacion == null)
                     return Results.BadRequest();
 
-                var result = await puntuacionService.PutPuntuacion(id, puntuacion);
+                var id = await puntuacionService.PostPuntuacionSinIdUser(puntuacion);
+
+                return Results.Created($"/api/puntuacion/{id}", new
+                {
+                    message = "¡Puntuación creada exitosamente!",
+                    Id = id
+                });
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Crear nueva puntuación sin id de usuario",
+                Description = "Crea una nueva puntuación sin id de usuario en el sistema",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+            //EndPoint para actualizar una puntuación
+            group.MapPut("/{id}", async (int id, PuntuacionRequestConIdUser puntuacion, IPuntuacionServices puntuacionService) =>
+            {
+                if (puntuacion == null)
+                    return Results.BadRequest();
+
+                var result = await puntuacionService.PutPuntuacionConIdUser(id, puntuacion);
 
                 if (result == -1)
                     return Results.NotFound(new { message = "Puntuación no encontrada" });

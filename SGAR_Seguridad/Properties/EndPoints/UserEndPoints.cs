@@ -35,6 +35,33 @@ namespace SGAR_Seguridad.Properties.EndPoints
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
 
+            //EndPoint para buscar usuarios por criterios
+            group.MapGet("/search", async (
+                string? nombre, 
+                string? apellido, 
+                string? telefono, 
+                string? email, 
+                int? idRol,
+                int? page, 
+                int? pageSize, 
+                IUserServices userService) =>
+            {
+                var currentPage = page ?? 1;
+                var size = pageSize ?? 10;
+                
+                if (currentPage < 1) currentPage = 1;
+                if (size < 1) size = 10;
+                if (size > 50) size = 50; // Límite máximo de registros por página
+                
+                var users = await userService.SearchUsers(nombre, apellido, telefono, email, idRol, currentPage, size);
+                return Results.Ok(users);
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Buscar usuarios por criterios",
+                Description = "Busca usuarios filtrando por nombre, apellido, teléfono, email y/o rol. Todos los parámetros son opcionales. Retorna resultados paginados.",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
             //EndPoint para obtener usuario por id
             group.MapGet("/{id}", async (int id, IUserServices userService) =>
             {

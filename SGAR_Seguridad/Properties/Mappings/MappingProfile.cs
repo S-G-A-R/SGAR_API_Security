@@ -35,7 +35,8 @@ namespace SGAR_Seguridad.Properties.Mappings
 
             CreateMap<Puntuacion, PuntuacionResponse>();
             CreateMap<PuntuacionRequest, Puntuacion>();
-
+            CreateMap<PuntuacionRequestConIdUser, Puntuacion>();
+            CreateMap<PuntuacionRequestSinIdUser, Puntuacion>();
         }
     }
 }

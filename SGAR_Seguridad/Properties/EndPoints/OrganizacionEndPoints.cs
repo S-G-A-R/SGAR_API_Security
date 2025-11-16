@@ -1,9 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SGAR_Seguridad.Properties.DTOs;
-using SGAR_Seguridad.Properties.Services.Operadores;
 using SGAR_Seguridad.Properties.Services.Organizations;
-using SGAR_Seguridad.Properties.Services.Users;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -33,6 +31,32 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener lista de organizacion paginada",
                 Description = "Retorna una lista paginada de usuarios. Por defecto 10 registros por página.",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+            //EndPoint para buscar organizaciones por criterios
+            group.MapGet("/search", async (
+                string? nombreOrganizacion,
+                string? telefono,
+                string? email,
+                string? idMunicipio,
+                int? page,
+                int? pageSize,
+                IOrganizacionServices orgService) =>
+            {
+                var currentPage = page ?? 1;
+                var size = pageSize ?? 10;
+
+                if (currentPage < 1) currentPage = 1;
+                if (size < 1) size = 10;
+                if (size > 50) size = 50;
+
+                var organizations = await orgService.SearchOrganizations(nombreOrganizacion, telefono, email, idMunicipio, currentPage, size);
+                return Results.Ok(organizations);
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Buscar organizaciones por criterios",
+                Description = "Busca organizaciones filtrando por nombre, teléfono, email y/o municipio. Todos los parámetros son opcionales. Retorna resultados paginados.",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
             //EndPoint para obtener organizacion por id

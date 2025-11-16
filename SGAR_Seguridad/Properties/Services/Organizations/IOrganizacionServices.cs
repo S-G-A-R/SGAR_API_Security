@@ -5,6 +5,7 @@ namespace SGAR_Seguridad.Properties.Services.Organizations
     public interface IOrganizacionServices
     {
         Task<PaginatedResponseOrganization<OrganizationResponse>> GetOrganizations(int pageNumber = 1, int pageSize = 10);
+        Task<PaginatedResponseOrganization<OrganizationResponse>> SearchOrganizations(string? nombreOrganizacion, string? telefono, string? email, string? idMunicipio, int pageNumber = 1, int pageSize = 10);
         Task<int> PostOrganization(OrganizationRequest organization);
         Task<OrganizationResponse> GetOrganization(int organizationId);
         Task<int> PutOrganization(int organizationId, OrganizationRequest organization);

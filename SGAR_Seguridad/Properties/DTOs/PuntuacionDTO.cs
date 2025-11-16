@@ -25,4 +25,16 @@ namespace SGAR_Seguridad.Properties.DTOs
         public string? NombreAnonimo { get; set; }
         public int? IdUser { get; set; }
     }
+
+    public class PuntuacionRequestConIdUser
+    {
+        public int Puntos { get; set; }
+        public int IdUser { get; set; }
+    }
+    
+    public class PuntuacionRequestSinIdUser
+    {
+        public int Puntos { get; set; }
+        public string? NombreAnonimo { get; set; }
+    }
 }

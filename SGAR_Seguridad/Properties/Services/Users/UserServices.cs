@@ -299,7 +299,8 @@ namespace SGAR_Seguridad.Properties.Services.Users
 
         public async Task<PaginatedResponseUser<UserResponse>> GetUsers(int pageNumber = 1, int pageSize = 10)
         {
-            var query = _db.Usuarios.AsNoTracking();
+            var query = _db.Usuarios.AsNoTracking()
+                .OrderByDescending(u => u.Id);
             
             var totalCount = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -323,5 +324,59 @@ namespace SGAR_Seguridad.Properties.Services.Users
             };
         }
 
+        public async Task<PaginatedResponseUser<UserResponse>> SearchUsers(string? nombre, string? apellido, string? telefono, string? email, int? idRol, int pageNumber = 1, int pageSize = 10)
+        {
+            var query = _db.Usuarios.AsNoTracking().AsQueryable();
+
+            // Aplicar filtros dinámicos solo si los parámetros no son nulos o vacíos
+            if (!string.IsNullOrWhiteSpace(nombre))
+            {
+                query = query.Where(u => u.Nombre.Contains(nombre));
+            }
+
+            if (!string.IsNullOrWhiteSpace(apellido))
+            {
+                query = query.Where(u => u.Apellido.Contains(apellido));
+            }
+
+            if (!string.IsNullOrWhiteSpace(telefono))
+            {
+                query = query.Where(u => u.Telefono != null && u.Telefono.Contains(telefono));
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                query = query.Where(u => u.Email.Contains(email));
+            }
+
+            if (idRol.HasValue)
+            {
+                query = query.Where(u => u.IdRol == idRol.Value);
+            }
+
+            // Ordenar de forma descendente por ID
+            query = query.OrderByDescending(u => u.Id);
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var users = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var userResponses = _mapper.Map<List<UserResponse>>(users);
+
+            return new PaginatedResponseUser<UserResponse>
+            {
+                Items = userResponses,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                TotalCount = totalCount,
+                HasNextPage = pageNumber < totalPages,
+                HasPreviousPage = pageNumber > 1
+            };
+        }
     }
 }

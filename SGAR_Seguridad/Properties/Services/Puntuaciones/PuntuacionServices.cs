@@ -24,16 +24,34 @@ namespace SGAR_Seguridad.Properties.Services.Puntuaciones
             return puntuacionResponse;
         }
 
-        public async Task<int> PostPuntuacion(PuntuacionRequest puntuacion)
+        public async Task<int> PostPuntuacionConIdUser(PuntuacionRequestConIdUser puntuacion)
         {
-            var puntuacionRequest = _mapper.Map<PuntuacionRequest, Puntuacion>(puntuacion);
+            var puntuacionRequest = _mapper.Map<PuntuacionRequestConIdUser, Puntuacion>(puntuacion);
 
             await _db.Puntuacions.AddAsync(puntuacionRequest);
             await _db.SaveChangesAsync();
             return puntuacionRequest.Id;
         }
+        public async Task<int> PostPuntuacionSinIdUser(PuntuacionRequestSinIdUser puntuacion)
+        {
+            var puntuacionRequest = _mapper.Map<PuntuacionRequestSinIdUser, Puntuacion>(puntuacion);
+            await _db.Puntuacions.AddAsync(puntuacionRequest);
+            await _db.SaveChangesAsync();
+            return puntuacionRequest.Id;
+        }
 
-        public async Task<int> PutPuntuacion(int puntuacionId, PuntuacionRequest puntuacion)
+        public async Task<int> PutPuntuacionConIdUser(int puntuacionId, PuntuacionRequestConIdUser puntuacion)
+        {
+            var puntuacionToUpdate = await _db.Puntuacions.FindAsync(puntuacionId);
+            if (puntuacionToUpdate == null)
+                return -1;
+            _mapper.Map(puntuacion, puntuacionToUpdate);
+            
+            _db.Puntuacions.Update(puntuacionToUpdate);
+            return await _db.SaveChangesAsync();
+        }
+
+        public async Task<int> PutPuntuacionSinIdUser(int puntuacionId, PuntuacionRequestSinIdUser puntuacion)
         {
             var puntuacionToUpdate = await _db.Puntuacions.FindAsync(puntuacionId);
             if (puntuacionToUpdate == null)
@@ -52,6 +70,37 @@ namespace SGAR_Seguridad.Properties.Services.Puntuaciones
                 return -1;
             _db.Puntuacions.Remove(puntuacion);
             return await _db.SaveChangesAsync();
+        }
+
+        public async Task<PaginatedResponsePuntuacion<PuntuacionResponse>> SearchPuntuaciones(int? puntos, int pageNumber = 1, int pageSize = 10)
+        {
+            var query = _db.Puntuacions.AsNoTracking().AsQueryable();
+
+            if (puntos.HasValue)
+            {
+                query = query.Where(u => u.Puntos == puntos.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var punts = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var puntosResponses = _mapper.Map<List<PuntuacionResponse>>(punts);
+
+            return new PaginatedResponsePuntuacion<PuntuacionResponse>
+            {
+                Items = puntosResponses,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                TotalCount = totalCount,
+                HasNextPage = pageNumber < totalPages,
+                HasPreviousPage = pageNumber > 1
+            };
         }
 
         public async Task<PaginatedResponsePuntuacion<PuntuacionResponse>> GetPuntuaciones(int pageNumber = 1, int pageSize = 10)

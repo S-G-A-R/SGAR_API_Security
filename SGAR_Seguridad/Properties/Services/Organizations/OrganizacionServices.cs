@@ -128,7 +128,8 @@ namespace SGAR_Seguridad.Properties.Services.Organizations
 
         public async Task<PaginatedResponseOrganization<OrganizationResponse>> GetOrganizations(int pageNumber = 1, int pageSize = 10)
         {
-            var query = _db.Organizacions.AsNoTracking();
+            var query = _db.Organizacions.AsNoTracking()
+                .OrderByDescending(o => o.Id);
 
             var totalCount = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -152,5 +153,54 @@ namespace SGAR_Seguridad.Properties.Services.Organizations
             };
         }
 
+        public async Task<PaginatedResponseOrganization<OrganizationResponse>> SearchOrganizations(string? nombreOrganizacion, string? telefono, string? email, string? idMunicipio, int pageNumber = 1, int pageSize = 10)
+        {
+            var query = _db.Organizacions.AsNoTracking().AsQueryable();
+
+            // Aplicar filtros dinámicos solo si los parámetros no son nulos o vacíos
+            if (!string.IsNullOrWhiteSpace(nombreOrganizacion))
+            {
+                query = query.Where(o => o.NombreOrganizacion.Contains(nombreOrganizacion));
+            }
+
+            if (!string.IsNullOrWhiteSpace(telefono))
+            {
+                query = query.Where(o => o.Telefono.Contains(telefono));
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                query = query.Where(o => o.Email.Contains(email));
+            }
+
+            if (!string.IsNullOrWhiteSpace(idMunicipio))
+            {
+                query = query.Where(o => o.IdMunicipio.Contains(idMunicipio));
+            }
+
+            // Ordenar de forma descendente por ID
+            query = query.OrderByDescending(o => o.Id);
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var organizations = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var organizationResponses = _mapper.Map<List<OrganizationResponse>>(organizations);
+
+            return new PaginatedResponseOrganization<OrganizationResponse>
+            {
+                Items = organizationResponses,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                TotalCount = totalCount,
+                HasNextPage = pageNumber < totalPages,
+                HasPreviousPage = pageNumber > 1
+            };
+        }
     }
 }

@@ -27,10 +27,10 @@ namespace SGAR_Seguridad.Properties.EndPoints
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
                 Summary = "Obtener lista de ciudadano paginada",
-                Description = "Retorna una lista paginada de ciudadno. Por defecto 10 registros por página.",
+                Description = "Retorna una lista paginada de ciudadanos. Por defecto 10 registros por página.",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
-            //EndPoint para obtener organizacion por id
+            //EndPoint para obtener ciudadano por id
             group.MapGet("/{id}", async (int id, ICiudadanoServices ciudadanoService) =>
             {
                 var getorg = await ciudadanoService.GetCiudadano(id);
@@ -44,7 +44,24 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Description = "Obtiene un ciudadano específico mediante su ID",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
-            //EndPoint para crear nuevo registro de organizaciones
+            //EndPoint para buscar ciudadano por IdUser
+            group.MapGet("/user/{idUser}", async (int idUser, ICiudadanoServices ciudadanoService) =>
+            {
+                var ciudadano = await ciudadanoService.SearchIdUser(idUser);
+                if (ciudadano == null)
+                    return Results.NotFound(new
+                    {
+                        message = "No se encontró un ciudadano asociado con el ID de usuario proporcionado."
+                    });
+                return Results.Ok(ciudadano);
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Buscar ciudadano por ID de Usuario",
+                Description = "Obtiene un ciudadano mediante el ID de usuario (IdUser)",
+            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+
+            //EndPoint para crear nuevo registro de ciudadano
             group.MapPost("/", async (CiudadanoRequest ciudadano, ICiudadanoServices ciudadanoService) =>
             {
                 if (ciudadano == null)
@@ -72,7 +89,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 if (result == -1)
                     return Results.NotFound(new
                     {
-                        message = "No se encontró la ciudadano con el ID proporcionado."
+                        message = "No se encontró el ciudadano con el ID proporcionado."
                     });
                 else
                     return Results.Ok(new
@@ -85,9 +102,8 @@ namespace SGAR_Seguridad.Properties.EndPoints
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
                 Summary = "Eliminar ciudadano",
-                Description = "Elimina una ciudadano existente mediante su ID",
+                Description = "Elimina un ciudadano existente mediante su ID",
             });
         }
     }
-
 }

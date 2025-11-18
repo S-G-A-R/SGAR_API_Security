@@ -52,9 +52,22 @@ namespace SGAR_Seguridad.Properties.Services.Ciudadanos
             return await _db.SaveChangesAsync();
         }
 
+        public async Task<CiudadanoResponse> SearchIdUser(int idUser)
+        {
+            var ciudadano = await _db.Ciudadanos
+                .FirstOrDefaultAsync(c => c.IdUser == idUser);
+            
+            if (ciudadano == null)
+                return null;
+                
+            var ciudadanoResponse = _mapper.Map<Ciudadano, CiudadanoResponse>(ciudadano);
+            return ciudadanoResponse;
+        }
+
         public async Task<PaginatedResponseCiudadano<CiudadanoResponse>> GetCiudadanos(int pageNumber = 1, int pageSize = 10)
         {
-            var query = _db.Ciudadanos.AsNoTracking();
+            var query = _db.Ciudadanos.AsNoTracking()
+                .OrderByDescending(c => c.Id);
 
             var totalCount = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);

@@ -7,7 +7,7 @@ public partial class Ciudadano
 {
     public int Id { get; set; }
 
-    public int IdZona { get; set; }
+    public string IdZona { get; set; } = null!;
 
     public int IdUser { get; set; }
 

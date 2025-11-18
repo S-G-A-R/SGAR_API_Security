@@ -66,6 +66,10 @@ public partial class SgarSecurityDbContext : DbContext
 
             entity.HasIndex(e => e.IdUser, "UQ__Ciudadan__B7C926398DA23D42").IsUnique();
 
+            entity.Property(e => e.IdZona)
+               .HasMaxLength(250)
+               .IsUnicode(false);
+
             entity.HasOne(d => d.IdUserNavigation).WithOne(p => p.Ciudadano)
                 .HasForeignKey<Ciudadano>(d => d.IdUser)
                 .OnDelete(DeleteBehavior.ClientSetNull)

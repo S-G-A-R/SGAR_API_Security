@@ -14,14 +14,13 @@
     public class CiudadanoResponse
     {
         public int Id { get; set; }
-        public int IdZona { get; set; }
+        public string IdZona { get; set; } = null!;
         public int IdUser { get; set; }
     }
 
     public class CiudadanoRequest
     {
-        public int Id { get; set; }
-        public int IdZona { get; set; }
+        public string IdZona { get; set; } = null!;
         public int IdUser { get; set; }
 
     }

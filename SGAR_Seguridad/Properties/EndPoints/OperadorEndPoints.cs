@@ -189,7 +189,6 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 int id,
                 [Microsoft.AspNetCore.Mvc.FromForm] int idUser,
                 [Microsoft.AspNetCore.Mvc.FromForm] string codigoOperador,
-                [Microsoft.AspNetCore.Mvc.FromForm] int idVehiculo,
                 [Microsoft.AspNetCore.Mvc.FromForm] int idOrganizacion,
                 IFormFile? file,
                 IOperadorServices operadorService) =>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using SGAR_Seguridad.Properties.DTOs;
 using SGAR_Seguridad.Properties.Services.Ciudadanos;
-using SGAR_Seguridad.Properties.Services.Organizations;
 
 namespace SGAR_Seguridad.Properties.EndPoints
 {
@@ -28,7 +27,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener lista de ciudadano paginada",
                 Description = "Retorna una lista paginada de ciudadanos. Por defecto 10 registros por página.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Operador", "Ciudadano", "Organizacion"));
 
             //EndPoint para obtener ciudadano por id
             group.MapGet("/{id}", async (int id, ICiudadanoServices ciudadanoService) =>
@@ -42,7 +41,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener un ciudadano por ID",
                 Description = "Obtiene un ciudadano específico mediante su ID",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Operador", "Ciudadano", "Organizacion"));
 
             //EndPoint para buscar ciudadano por IdUser
             group.MapGet("/user/{idUser}", async (int idUser, ICiudadanoServices ciudadanoService) =>
@@ -59,7 +58,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Buscar ciudadano por ID de Usuario",
                 Description = "Obtiene un ciudadano mediante el ID de usuario (IdUser)",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Operador", "Ciudadano", "Asociado", "Organizacion"));
 
             //EndPoint para crear nuevo registro de ciudadano
             group.MapPost("/", async (CiudadanoRequest ciudadano, ICiudadanoServices ciudadanoService) =>
@@ -82,7 +81,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Description = "Crea un nuevo ciudadano en el sistema",
             });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
 
-            // EndPoint para eliminar un registro de ciudadano
+            // EndPoint para eliminar un registro de ciudadano por ID
             group.MapDelete("/{id}", async (int id, ICiudadanoServices ciudadanoService) =>
             {
                 var result = await ciudadanoService.DeleteCiudadano(id);
@@ -101,9 +100,32 @@ namespace SGAR_Seguridad.Properties.EndPoints
 
             }).WithOpenApi(o => new OpenApiOperation(o)
             {
-                Summary = "Eliminar ciudadano",
+                Summary = "Eliminar ciudadano por ID",
                 Description = "Elimina un ciudadano existente mediante su ID",
-            });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Operador", "Ciudadano", "Organizacion"));
+
+            // EndPoint para eliminar un registro de ciudadano por ID de Usuario
+            group.MapDelete("/user/{idUser}", async (int idUser, ICiudadanoServices ciudadanoService) =>
+            {
+                var result = await ciudadanoService.DeleteIdUser(idUser);
+                if (result == -1)
+                    return Results.NotFound(new
+                    {
+                        message = "No se encontró un ciudadano asociado con el ID de usuario proporcionado."
+                    });
+                else
+                    return Results.Ok(new
+                    {
+                        // Mensaje de éxito explícito
+                        message = "¡Ciudadano eliminado exitosamente por ID de usuario!",
+                        idUser = idUser
+                    });
+
+            }).WithOpenApi(o => new OpenApiOperation(o)
+            {
+                Summary = "Eliminar ciudadano por ID de Usuario",
+                Description = "Elimina un ciudadano existente mediante el ID de usuario (IdUser)",
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Operador", "Ciudadano", "Organizacion"));
         }
     }
 }

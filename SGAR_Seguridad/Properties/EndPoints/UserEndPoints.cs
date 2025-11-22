@@ -32,7 +32,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener lista de usuarios paginada",
                 Description = "Retorna una lista paginada de usuarios. Por defecto 10 registros por página.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
 
             //EndPoint para buscar usuarios por criterios
@@ -60,7 +60,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Buscar usuarios por criterios",
                 Description = "Busca usuarios filtrando por nombre, apellido, teléfono, email y/o rol. Todos los parámetros son opcionales. Retorna resultados paginados.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(policy => policy.RequireRole("Administrador", "Operador", "Ciudadano", "Asociado", "Organizacion"));
 
             //EndPoint para obtener usuario por id
             group.MapGet("/{id}", async (int id, IUserServices userService) =>
@@ -74,7 +74,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener un usuario por ID",
                 Description = "Obtiene un usuario específico mediante su ID",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para crear nuevo registro de usuarios
             group.MapPost("/", async (UserRequest user, IUserServices userService) =>
@@ -95,7 +95,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Crear nuevo usuario (JSON)",
                 Description = "Crea un nuevo usuario en el sistema. Puede incluir una foto en formato base64 en el campo FotoBase64",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
 
             //EndPoint para crear nuevo registro de usuarios con archivo de imagen
             group.MapPost("/create", async (
@@ -139,7 +139,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Crear nuevo usuario con foto (Form-Data)",
                 Description = "Crea un nuevo usuario en el sistema cargando directamente una imagen. La foto es opcional. Formatos permitidos: JPG, JPEG, PNG, GIF, BMP. Tamaño máximo: 5MB",
-            }).DisableAntiforgery();//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).DisableAntiforgery();
 
             //EndPoint para actualizar un registro de usuario (JSON)
             group.MapPut("/{id}", async (int id, UserRequest userUpdate, IUserServices userService) =>
@@ -168,7 +168,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Actualizar usuario (JSON)",
                 Description = "Actualiza la información de un usuario existente. Puede incluir una foto en formato base64 en el campo FotoBase64",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para actualizar usuario con archivo de imagen
             group.MapPut("/update/{id}", async (
@@ -222,7 +222,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
                              "- Si NO envías archivo: Se mantiene la foto actual\n" +
                              "- El campo 'password' es opcional, déjalo vacío para no cambiarlo\n" +
                              "Formatos permitidos: JPG, JPEG, PNG, GIF, BMP. Tamaño máximo: 5MB",
-            }).DisableAntiforgery();//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).DisableAntiforgery().RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             // EndPoint para eliminar un registro de usuario
             group.MapDelete("/{id}", async (int id, IUserServices userService) =>
@@ -245,7 +245,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Eliminar usuario",
                 Description = "Elimina un usuario existente mediante su ID",
-            });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Organizacion" });
 
             //EndPoint para actualizar el rol de un usuario
             group.MapPut("/{id}/role", async (int id, UpdateRolRequest userUpdateRol, IUserServices userService) =>
@@ -274,7 +274,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Actualizar rol de usuario",
                 Description = "Actualiza únicamente el rol de un usuario existente.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Organizacion" });
 
             //EndPoint para generar token 
             group.MapPost("/login", async (CredencialesRequest user, IUserServices userService, IConfiguration config) =>

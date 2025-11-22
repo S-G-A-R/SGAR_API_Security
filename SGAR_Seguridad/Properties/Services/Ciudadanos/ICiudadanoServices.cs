@@ -1,4 +1,5 @@
 ﻿using SGAR_Seguridad.Properties.DTOs;
+using System.Threading.Tasks;
 
 namespace SGAR_Seguridad.Properties.Services.Ciudadanos
 {
@@ -9,6 +10,7 @@ namespace SGAR_Seguridad.Properties.Services.Ciudadanos
         Task<CiudadanoResponse> GetCiudadano(int ciudadanoId);
         Task<int> DeleteCiudadano(int ciudadanoId);
         Task<CiudadanoResponse> SearchIdUser (int idUser);
+        Task<int> DeleteIdUser(int idUser);
         //Task<UserResponse> BuscarPersonal(string? nombre, string? apellido, string? telefono, string? correo);
     }
 }

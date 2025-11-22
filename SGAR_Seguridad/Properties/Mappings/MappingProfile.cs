@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using SGAR_Seguridad.Properties.Models;
 using SGAR_Seguridad.Properties.DTOs;
+using SGAR_Seguridad.Properties.Models;
 
 namespace SGAR_Seguridad.Properties.Mappings
 {
@@ -35,8 +35,11 @@ namespace SGAR_Seguridad.Properties.Mappings
 
             CreateMap<Puntuacion, PuntuacionResponse>();
             CreateMap<PuntuacionRequest, Puntuacion>();
+
             CreateMap<PuntuacionRequestConIdUser, Puntuacion>();
             CreateMap<PuntuacionRequestSinIdUser, Puntuacion>();
+
+            CreateMap<Role, RolResponse>();
         }
     }
 }

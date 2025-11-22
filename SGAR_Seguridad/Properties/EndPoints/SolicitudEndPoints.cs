@@ -1,9 +1,7 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
 using SGAR_Seguridad.Properties.DTOs;
-using SGAR_Seguridad.Properties.Services.Operadores;
-using SGAR_Seguridad.Properties.Services.Organizations;
 using SGAR_Seguridad.Properties.Services.Solicitudes;
-using SGAR_Seguridad.Properties.Services.Users;
 
 namespace SGAR_Seguridad.Properties.EndPoints
 {
@@ -30,7 +28,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener lista de solicitudes paginada",
                 Description = "Retorna una lista paginada de solicitudes. Por defecto 10 registros por página.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para obtener una solicitud por id
             group.MapGet("/{id}", async (int id, ISolicitudServices solicitudService) =>
@@ -44,7 +42,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener una solicitud por ID",
                 Description = "Obtiene una solicitud específico mediante su ID",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para crear nuevo registro de solicitud
             group.MapPost("/", async (SolicitudRequest solictud, ISolicitudServices solicitudService) =>
@@ -65,7 +63,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Crear nueva solicitud",
                 Description = "Crea una nueva solicitud en el sistema",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
 
             // EndPoint para eliminar un registro de solictud
@@ -89,7 +87,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Eliminar solicitud",
                 Description = "Elimina una solicitud existente mediante su ID",
-            });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para actualizar una solicitud
             group.MapPut("/{id}", async (int id, SolicitudRequest solicitudUpdate, ISolicitudServices solicitudService) =>
@@ -111,12 +109,8 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Actualizar solicitud",
                 Description = "Actualiza la información de una solicitud existente",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
-
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
         }
-
-
-
     }
 }

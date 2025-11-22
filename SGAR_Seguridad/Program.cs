@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using SGAR_Seguridad.Properties.Services.Solicitudes;
 using SGAR_Seguridad.Properties.Services.Puntuaciones;
+using SGAR_Seguridad.Properties.Services.Rols;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -72,6 +73,7 @@ builder.Services.AddScoped<IOperadorServices, OperadorServices>();
 builder.Services.AddScoped<IAdministradorServices, AdministradorServices>();
 builder.Services.AddScoped<ISolicitudServices, SolicitudServices>();
 builder.Services.AddScoped<IPuntuacionServices, PuntuacionServices>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 var JwtSetting = builder.Configuration.GetSection("JwtSetting");
 var secretKey = JwtSetting.GetValue<string>("SecretKey");

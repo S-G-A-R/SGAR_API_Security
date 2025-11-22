@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SGAR_Seguridad.Properties.DTOs;
 using SGAR_Seguridad.Properties.Services.Organizations;
@@ -31,7 +32,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener lista de organizacion paginada",
                 Description = "Retorna una lista paginada de usuarios. Por defecto 10 registros por página.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para buscar organizaciones por criterios
             group.MapGet("/search", async (
@@ -57,7 +58,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Buscar organizaciones por criterios",
                 Description = "Busca organizaciones filtrando por nombre, teléfono, email y/o municipio. Todos los parámetros son opcionales. Retorna resultados paginados.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para obtener organizacion por id
             group.MapGet("/{id}", async (int id, IOrganizacionServices orgService) =>
@@ -71,7 +72,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener una organizacion por ID",
                 Description = "Obtiene una organizacion específico mediante su ID",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para crear nuevo registro de organizaciones
             group.MapPost("/", async (OrganizationRequest orgUser, IOrganizacionServices organizacionService) =>
@@ -92,7 +93,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Crear nuevo organizacion",
                 Description = "Crea un nueva organizacion en el sistema",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
 
             // EndPoint para eliminar un registro de organizacion
             group.MapDelete("/{id}", async (int id, IOrganizacionServices orgService) =>
@@ -115,7 +116,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Eliminar organizacion",
                 Description = "Elimina una organizacion existente mediante su ID",
-            });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Organizacion" });
 
             //EndPoint para actualizar un registro de organizacion
             group.MapPut("/{id}", async (int id, OrganizationRequest orgUpdate, IOrganizacionServices orgService) =>
@@ -137,7 +138,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Actualizar organizacion",
                 Description = "Actualiza la información de un organizacion existente",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para generar token 
             group.MapPost("/login", async (CredencialesOrganizationRequest orgUser, IOrganizacionServices orgService, IConfiguration config) =>

@@ -64,6 +64,18 @@ namespace SGAR_Seguridad.Properties.Services.Ciudadanos
             return ciudadanoResponse;
         }
 
+        public async Task<int> DeleteIdUser(int idUser)
+        {
+            var ciudadano = await _db.Ciudadanos
+                .FirstOrDefaultAsync(c => c.IdUser == idUser);
+            
+            if (ciudadano == null)
+                return -1;
+
+            _db.Ciudadanos.Remove(ciudadano);
+            return await _db.SaveChangesAsync();
+        }
+
         public async Task<PaginatedResponseCiudadano<CiudadanoResponse>> GetCiudadanos(int pageNumber = 1, int pageSize = 10)
         {
             var query = _db.Ciudadanos.AsNoTracking()

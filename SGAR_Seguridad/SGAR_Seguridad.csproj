@@ -28,4 +28,12 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Api\SGAR_Seguridad\SGAR_Seguridad\Properties\Services\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Api\SGAR_Seguridad\SGAR_Seguridad\Properties\Services\.editorconfig" />
+  </ItemGroup>
+
 </Project>

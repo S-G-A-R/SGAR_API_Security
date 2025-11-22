@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
 using SGAR_Seguridad.Properties.DTOs;
 using SGAR_Seguridad.Properties.Services.Operadores;
 
@@ -27,7 +28,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener lista de operadores paginada",
                 Description = "Retorna una lista paginada de operadores. Por defecto 10 registros por página.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para buscar operadores por criterios
             group.MapGet("/search", async (
@@ -52,7 +53,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Buscar operadores por criterios",
                 Description = "Busca operadores filtrando por código, usuario y/o organización. Todos los parámetros son opcionales. Retorna resultados paginados.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para obtener organizacion por id
             group.MapGet("/{id}", async (int id, IOperadorServices operadorService) =>
@@ -66,7 +67,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener un operador por ID",
                 Description = "Obtiene un operador específico mediante su ID",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Organizacion" });
 
             //EndPoint para crear nuevo registro de operador (JSON)
             group.MapPost("/", async (OperadorRequest operador, IOperadorServices operadorService) =>
@@ -93,7 +94,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Crear nuevo Operador (JSON)",
                 Description = "Crea un nuevo operador en el sistema",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para crear nuevo registro de operador con archivo de documento
             group.MapPost("/create", async (
@@ -130,7 +131,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
                 Summary = "Crear nuevo operador con documento (Form-Data)",
                 Description = "Crea un nuevo operador en el sistema cargando directamente un documento de licencia. " +
                              "El documento es opcional. Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 10MB",
-            }).DisableAntiforgery();//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).DisableAntiforgery().RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             // EndPoint para eliminar un registro de Operador por id
             group.MapDelete("/{id}", async (int id, IOperadorServices oprgService) =>
@@ -153,7 +154,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Eliminar operador",
                 Description = "Elimina una operador existente mediante su ID",
-            });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Organizacion" });
 
             //EndPoint para actualizar un registro de operador (JSON)
             group.MapPut("/{id}", async (int id, OperadorRequest operadorUpdate, IOperadorServices operadorService) =>
@@ -182,7 +183,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Actualizar operador (JSON)",
                 Description = "Actualiza la información de un operador existente",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
             //EndPoint para actualizar operador con archivo de documento
             group.MapPut("/update/{id}", async (
@@ -227,7 +228,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
                              "- Si envías un archivo: Se actualiza el documento\n" +
                              "- Si NO envías archivo: Se mantiene el documento actual\n" +
                              "Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 10MB",
-            }).DisableAntiforgery();//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            }).DisableAntiforgery().RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
 
 
         }

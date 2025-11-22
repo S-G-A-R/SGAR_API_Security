@@ -27,7 +27,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener lista de puntuaciones paginada",
                 Description = "Retorna una lista paginada de puntuaciones. Por defecto 10 registros por página.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
 
             //EndPoint para buscar puntuaciones por puntos
             group.MapGet("/search", async (int? puntos, int? page, int? pageSize, IPuntuacionServices puntuacionService) =>
@@ -46,7 +46,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Buscar puntuaciones por puntos",
                 Description = "Busca puntuaciones filtrando por cantidad de puntos. El parámetro 'puntos' es opcional. Si no se proporciona, retorna todas las puntuaciones paginadas.",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
 
 
             //EndPoint para obtener una puntuación por id
@@ -61,7 +61,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener una puntuación por ID",
                 Description = "Obtiene una puntuación específica mediante su ID",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
 
             //EndPoint para crear nueva puntuación de un usuario
             group.MapPost("/Autenticado", async (PuntuacionRequestConIdUser puntuacion, IPuntuacionServices puntuacionService) =>
@@ -81,7 +81,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Crear nueva puntuación de un usuario",
                 Description = "Crea una nueva puntuación de un usuario en el sistema",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
 
             //EndPoint para crear nueva puntuación de un usuario sin IdUser
             group.MapPost("/Anonimo", async (PuntuacionRequestSinIdUser puntuacion, IPuntuacionServices puntuacionService) =>
@@ -101,7 +101,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Crear nueva puntuación sin id de usuario",
                 Description = "Crea una nueva puntuación sin id de usuario en el sistema",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
 
             //EndPoint para actualizar una puntuación
             group.MapPut("/{id}", async (int id, PuntuacionRequestConIdUser puntuacion, IPuntuacionServices puntuacionService) =>
@@ -124,7 +124,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Actualizar una puntuación",
                 Description = "Actualiza los datos de una puntuación existente",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
 
             //EndPoint para eliminar una puntuación
             group.MapDelete("/{id}", async (int id, IPuntuacionServices puntuacionService) =>
@@ -144,7 +144,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Eliminar una puntuación",
                 Description = "Elimina una puntuación del sistema mediante su ID",
-            });//.RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador" });
+            });
         }
     }
 }

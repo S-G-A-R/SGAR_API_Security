@@ -8,10 +8,10 @@
             UserEndPoints.add(app);
             OrganizacionEndPoints.add(app);
             CiudadanoEndPoints.add(app);
-            AdministradorEndPoints.add(app);
             OperadorEndPoints.add(app);
             SolicitudEndPoints.add(app);
             PuntuacionEndPoints.add(app);
+            RoleEndPoints.add(app);
         }
     }
 }

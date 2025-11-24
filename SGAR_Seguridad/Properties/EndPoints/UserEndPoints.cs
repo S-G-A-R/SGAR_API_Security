@@ -309,6 +309,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
                             new Claim(ClaimTypes.NameIdentifier, login.UserId.ToString()),
                             new Claim(ClaimTypes.Email, login.Email),
                             new Claim(ClaimTypes.Role, roleName),
+                            new Claim(ClaimTypes.Name, login.nombre)
                          }),
                         Expires = DateTime.UtcNow.AddHours(8),
                         Issuer = issuer,

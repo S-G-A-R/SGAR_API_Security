@@ -276,7 +276,9 @@ namespace SGAR_Seguridad.Properties.Services.Users
             {
                 UserId = userEntity.Id,
                 Email = userEntity.Email,
-                IdRol = userEntity.IdRol
+                IdRol = userEntity.IdRol,
+                nombre = userEntity.Nombre,
+
             };
 
             return credencialesResponse;

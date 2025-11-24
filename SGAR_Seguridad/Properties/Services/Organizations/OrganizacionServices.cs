@@ -120,7 +120,8 @@ namespace SGAR_Seguridad.Properties.Services.Organizations
             {
                 orgUserId = userEntity.Id,
                 Email = userEntity.Email,
-                IdRol = userEntity.IdRol
+                IdRol = userEntity.IdRol,
+                nombre = userEntity.NombreOrganizacion
             };
 
             return CredencialesOrganizationResponse;

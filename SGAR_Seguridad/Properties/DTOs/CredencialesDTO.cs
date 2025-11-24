@@ -3,6 +3,7 @@
     public class CredencialesResponse
     {
         public int UserId { get; set; }
+        public string nombre { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public int IdRol { get; set; }
@@ -17,6 +18,7 @@
     public class  CredencialesOrganizationResponse
     {
         public int orgUserId { get; set; }
+        public string nombre { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public int IdRol { get; set; }

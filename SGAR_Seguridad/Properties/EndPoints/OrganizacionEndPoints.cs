@@ -32,7 +32,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener lista de organizacion paginada",
                 Description = "Retorna una lista paginada de usuarios. Por defecto 10 registros por página.",
-            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
+            });
 
             //EndPoint para buscar organizaciones por criterios
             group.MapGet("/search", async (
@@ -58,7 +58,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Buscar organizaciones por criterios",
                 Description = "Busca organizaciones filtrando por nombre, teléfono, email y/o municipio. Todos los parámetros son opcionales. Retorna resultados paginados.",
-            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
+            });
 
             //EndPoint para obtener organizacion por id
             group.MapGet("/{id}", async (int id, IOrganizacionServices orgService) =>
@@ -72,7 +72,7 @@ namespace SGAR_Seguridad.Properties.EndPoints
             {
                 Summary = "Obtener una organizacion por ID",
                 Description = "Obtiene una organizacion específico mediante su ID",
-            }).RequireAuthorization(new AuthorizeAttribute { Roles = "Administrador, Operador, Ciudadano, Asociado, Organizacion" });
+            });
 
             //EndPoint para crear nuevo registro de organizaciones
             group.MapPost("/", async (OrganizationRequest orgUser, IOrganizacionServices organizacionService) =>
